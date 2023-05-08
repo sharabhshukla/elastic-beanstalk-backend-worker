@@ -1,18 +1,19 @@
-import awswrangler as wr
 import boto3
-import pandas as pd
-from typing import List
 
-dynamodb = boto3.resource('dynamodb')
+
+dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
 session = boto3.Session(region_name='us-east-1')
+
 
 # Create an entry in dynamodb using boto3
 def create_entry(table_name: str, item: dict):
-    wr.dynamodb.put_items(
-        table_name=table_name,
-        items=[item],
-        boto3_session=session
-    )
+    # Get a reference to the DynamoDB table
+    table = dynamodb.Table(table_name)
+
+    # Write the item to the table
+    table.put_item(Item=item)
+
+    print(f"Successfully wrote item to table {table_name}")
     return "Success!!"
 
 
